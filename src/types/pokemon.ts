@@ -11,6 +11,14 @@ export interface PokemonListResponse {
   }[];
 }
 
+// Basic Pokemon type for list view
+export interface PokemonListItem {
+  id: number;
+  name: string;
+  imageUrl: string;
+}
+
+// Full Pokemon details from the API
 export interface PokemonDetails {
   id: number;
   name: string;
@@ -49,14 +57,6 @@ export interface PokemonDetails {
     is_hidden: boolean;
     slot: number;
   }[];
-}
-
-// Simplified Pokemon type for card display
-export interface PokemonCard {
-  id: number;
-  name: string;
-  imageUrl: string;
-  types: string[];
 }
 
 // Loading states for components

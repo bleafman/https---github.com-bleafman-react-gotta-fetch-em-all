@@ -58,4 +58,15 @@ export const transformToCard = (details: PokemonDetails) => ({
     details.sprites.other["official-artwork"].front_default ||
     details.sprites.front_default,
   types: details.types.map((t) => t.type.name),
+  stats: details.stats.map((s) => ({
+    base_stat: s.base_stat,
+    stat: {
+      name: s.stat.name,
+    },
+  })),
+  abilities: details.abilities.map((a) => ({
+    ability: {
+      name: a.ability.name,
+    },
+  })),
 });

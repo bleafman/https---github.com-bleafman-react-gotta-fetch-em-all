@@ -6,12 +6,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { PokemonCard as PokemonCardType } from "../types/pokemon";
 import { LoadingSkeleton } from "./LoadingSkeleton";
 import { ErrorDisplay } from "./ErrorDisplay";
+import { usePokemonDetails } from "../pages/react-query/data/hooks/usePokemon";
 
 interface PokemonCardProps {
-  pokemon: PokemonCardType;
+  name: string;
   isLoading?: boolean;
   error?: Error | null;
   onClick?: () => void;
@@ -39,16 +39,18 @@ const TYPE_COLORS: { [key: string]: string } = {
 };
 
 export const PokemonCard = ({
-  pokemon,
+  name,
   isLoading,
   error,
   onClick,
 }: PokemonCardProps) => {
+  const { data: pokemon } = usePokemonDetails(name);
+
   if (error) {
     return <ErrorDisplay error={error} />;
   }
 
-  if (isLoading) {
+  if (isLoading || !pokemon) {
     return <LoadingSkeleton count={1} />;
   }
 

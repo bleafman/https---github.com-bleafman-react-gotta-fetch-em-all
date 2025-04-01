@@ -18,7 +18,7 @@ export const LoadingSkeleton = ({
         <Skeleton variant="text" height={30} sx={{ mb: 1 }} />
         <Grid container spacing={2} sx={{ mt: 2 }}>
           {[...Array(6)].map((_, i) => (
-            <Grid item xs={6} key={i}>
+            <Grid size={6} key={i}>
               <Skeleton variant="text" height={30} />
             </Grid>
           ))}
@@ -30,7 +30,7 @@ export const LoadingSkeleton = ({
   return (
     <Grid container spacing={2}>
       {[...Array(count)].map((_, i) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+        <Grid size={12} key={i}>
           <Card>
             <Skeleton variant="rectangular" height={200} />
             <CardContent>

@@ -1,10 +1,15 @@
 import { useParams } from "react-router-dom";
-import { Box, Card, CardContent, Typography, Chip } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Chip,
+  Skeleton,
+} from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { usePokemonDetails } from "../hooks/usePokemon";
+import { usePokemonDetails } from "../data/hooks/usePokemon";
 import ErrorDisplay from "../../../components/ErrorDisplay";
-import LoadingSkeleton from "../../../components/LoadingSkeleton";
-import type { PokemonDetails } from "../../../types/pokemon";
 
 export default function PokemonDetail() {
   const { pokemonName } = useParams<{ pokemonName: string }>();
@@ -16,7 +21,41 @@ export default function PokemonDetail() {
   } = usePokemonDetails(pokemonName || "");
 
   if (isLoading) {
-    return <LoadingSkeleton />;
+    return (
+      <Card>
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <Skeleton variant="rectangular" width={200} height={200} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 8 }}>
+              <Skeleton variant="text" width={200} height={40} />
+              <Box sx={{ my: 2 }}>
+                <Skeleton variant="text" width={100} />
+                <Skeleton variant="text" width={100} />
+              </Box>
+              <Skeleton variant="text" width={150} />
+              <Box sx={{ mb: 1 }}>
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <Skeleton key={i} variant="text" width={120} />
+                ))}
+              </Box>
+              <Skeleton variant="text" width={150} />
+              <Box sx={{ mb: 1 }}>
+                {[1, 2, 3].map((i) => (
+                  <Skeleton
+                    key={i}
+                    variant="text"
+                    width={100}
+                    sx={{ mr: 1, display: "inline-block" }}
+                  />
+                ))}
+              </Box>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (isError) {
@@ -31,15 +70,15 @@ export default function PokemonDetail() {
     <Card>
       <CardContent>
         <Grid container spacing={2}>
-          <Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Box
               component="img"
-              src={pokemon.sprites.front_default}
+              src={pokemon.imageUrl}
               alt={pokemon.name}
-              sx={{ width: "100%", height: "auto" }}
+              sx={{ width: 200, height: "auto" }}
             />
           </Grid>
-          <Grid>
+          <Grid size={{ xs: 12, sm: 8 }}>
             <Typography
               variant="h4"
               component="h1"
@@ -48,10 +87,10 @@ export default function PokemonDetail() {
               {pokemon.name}
             </Typography>
             <Box sx={{ my: 2 }}>
-              {pokemon.types.map((type) => (
+              {pokemon.types.map((type: string) => (
                 <Chip
-                  key={type.type.name}
-                  label={type.type.name}
+                  key={type}
+                  label={type}
                   sx={{ mr: 1, textTransform: "capitalize" }}
                 />
               ))}
