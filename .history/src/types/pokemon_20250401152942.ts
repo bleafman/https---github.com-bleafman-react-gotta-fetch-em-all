@@ -1,0 +1,79 @@
+// Types based on PokeAPI responses
+// https://pokeapi.co/api/v2/pokemon and https://pokeapi.co/api/v2/pokemon/{id}
+
+export interface PokemonListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: {
+    name: string;
+    url: string;
+  }[];
+}
+
+export interface PokemonDetails {
+  id: number;
+  name: string;
+  base_experience: number;
+  height: number;
+  weight: number;
+  sprites: {
+    front_default: string;
+    back_default: string;
+    other: {
+      "official-artwork": {
+        front_default: string;
+      };
+    };
+  };
+  types: {
+    slot: number;
+    type: {
+      name: string;
+      url: string;
+    };
+  }[];
+  stats: {
+    base_stat: number;
+    effort: number;
+    stat: {
+      name: string;
+      url: string;
+    };
+  }[];
+  abilities: {
+    ability: {
+      name: string;
+      url: string;
+    };
+    is_hidden: boolean;
+    slot: number;
+  }[];
+}
+
+// Simplified Pokemon type for card display
+export interface PokemonCard {
+  id: number;
+  name: string;
+  imageUrl: string;
+  types: string[];
+}
+
+// Loading states for components
+export interface LoadingState {
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+}
+
+// Combined state types for Redux
+export interface PokemonState {
+  list: {
+    data: PokemonListResponse | null;
+  } & LoadingState;
+  details: {
+    [key: string]: {
+      data: PokemonDetails | null;
+    } & LoadingState;
+  };
+}
