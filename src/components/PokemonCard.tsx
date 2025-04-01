@@ -5,8 +5,8 @@ import {
   Chip,
   Stack,
   Typography,
+  Skeleton,
 } from "@mui/material";
-import { LoadingSkeleton } from "./LoadingSkeleton";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { usePokemonDetails } from "../pages/react-query/data/hooks/usePokemon";
 
@@ -15,6 +15,7 @@ interface PokemonCardProps {
   isLoading?: boolean;
   error?: Error | null;
   onClick?: () => void;
+  showLoadingState?: boolean; // Whether to show loading state for individual cards
 }
 
 const TYPE_COLORS: { [key: string]: string } = {
@@ -43,16 +44,16 @@ export const PokemonCard = ({
   isLoading,
   error,
   onClick,
+  showLoadingState = false, // Default to false for grid items
 }: PokemonCardProps) => {
-  const { data: pokemon } = usePokemonDetails(name);
+  const { data: pokemon, isLoading: isLoadingDetails } =
+    usePokemonDetails(name);
 
   if (error) {
     return <ErrorDisplay error={error} />;
   }
 
-  if (isLoading || !pokemon) {
-    return <LoadingSkeleton count={1} />;
-  }
+  const isCardLoading = (isLoading || isLoadingDetails) && showLoadingState;
 
   return (
     <Card
@@ -70,37 +71,56 @@ export const PokemonCard = ({
       }}
       onClick={onClick}
     >
-      <CardMedia
-        component="img"
-        height="200"
-        image={pokemon.imageUrl}
-        alt={pokemon.name}
-        sx={{ objectFit: "contain", p: 2, bgcolor: "#f5f5f5" }}
-      />
-      <CardContent>
-        <Typography
-          gutterBottom
-          variant="h5"
-          component="div"
-          sx={{ textTransform: "capitalize" }}
-        >
-          {pokemon.name}
-        </Typography>
-        <Stack direction="row" spacing={1}>
-          {pokemon.types.map((type) => (
-            <Chip
-              key={type}
-              label={type}
-              size="small"
-              sx={{
-                bgcolor: TYPE_COLORS[type] || "#777",
-                color: "white",
-                textTransform: "capitalize",
-              }}
-            />
-          ))}
-        </Stack>
-      </CardContent>
+      {isCardLoading ? (
+        <>
+          <Skeleton
+            variant="rectangular"
+            height={200}
+            sx={{
+              bgcolor: "#f5f5f5",
+              p: 2,
+            }}
+          />
+          <CardContent>
+            <Skeleton variant="text" height={30} sx={{ mb: 1 }} />
+            <Skeleton variant="text" height={24} width="60%" />
+          </CardContent>
+        </>
+      ) : pokemon ? (
+        <>
+          <CardMedia
+            component="img"
+            height="200"
+            image={pokemon.imageUrl}
+            alt={pokemon.name}
+            sx={{ objectFit: "contain", p: 2, bgcolor: "#f5f5f5" }}
+          />
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              sx={{ textTransform: "capitalize" }}
+            >
+              {pokemon.name}
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              {pokemon.types.map((type) => (
+                <Chip
+                  key={type}
+                  label={type}
+                  size="small"
+                  sx={{
+                    bgcolor: TYPE_COLORS[type] || "#777",
+                    color: "white",
+                    textTransform: "capitalize",
+                  }}
+                />
+              ))}
+            </Stack>
+          </CardContent>
+        </>
+      ) : null}
     </Card>
   );
 };

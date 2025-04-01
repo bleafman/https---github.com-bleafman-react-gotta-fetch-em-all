@@ -2,20 +2,11 @@ import { Box, Button } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import PokemonGrid from "../../../components/PokemonGrid";
 import ErrorDisplay from "../../../components/ErrorDisplay";
-import LoadingSkeleton from "../../../components/LoadingSkeleton";
 import { usePokemonList } from "../data/hooks/usePokemon";
 
 export default function PokemonList() {
   const queryClient = useQueryClient();
   const { data: pokemon, isLoading, isError, error } = usePokemonList();
-
-  if (isLoading) {
-    return <LoadingSkeleton />;
-  }
-
-  if (isError) {
-    return <ErrorDisplay error={error} />;
-  }
 
   const handleInvalidateCache = () => {
     // Invalidate all queries
@@ -33,7 +24,15 @@ export default function PokemonList() {
           Invalidate Cache
         </Button>
       </Box>
-      <PokemonGrid pokemon={pokemon || []} basePath="/react-query" />
+      {isError ? (
+        <ErrorDisplay error={error} />
+      ) : (
+        <PokemonGrid
+          pokemon={pokemon || []}
+          basePath="/react-query"
+          isLoading={isLoading}
+        />
+      )}
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Card,
@@ -6,19 +6,41 @@ import {
   Typography,
   Chip,
   Skeleton,
+  Divider,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { usePokemonDetails } from "../data/hooks/usePokemon";
+import {
+  usePokemonDetails,
+  usePokemonSpecies,
+  useEvolutionChain,
+  extractEvolutionNames,
+} from "../data/hooks/usePokemon";
 import ErrorDisplay from "../../../components/ErrorDisplay";
+import PokemonCard from "../../../components/PokemonCard";
 
 export default function PokemonDetail() {
   const { pokemonName } = useParams<{ pokemonName: string }>();
+  const navigate = useNavigate();
+
   const {
     data: pokemon,
     isLoading,
     isError,
     error,
   } = usePokemonDetails(pokemonName || "");
+
+  // Fetch species data which contains evolution chain URL
+  const { data: species } = usePokemonSpecies(pokemonName || "");
+
+  // Fetch evolution chain data
+  const { data: evolutionChain } = useEvolutionChain(
+    species?.evolution_chain.url
+  );
+
+  // Extract evolution names when chain is available
+  const evolutionNames = evolutionChain
+    ? extractEvolutionNames(evolutionChain.chain)
+    : [];
 
   if (isLoading) {
     return (
@@ -116,6 +138,28 @@ export default function PokemonDetail() {
                 sx={{ mr: 1, mb: 1, textTransform: "capitalize" }}
               />
             ))}
+
+            {evolutionNames.length > 0 && (
+              <>
+                <Divider sx={{ my: 3 }} />
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Evolution Chain
+                </Typography>
+                <Grid container spacing={2}>
+                  {evolutionNames.map((name) => (
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={name}>
+                      <PokemonCard
+                        name={name}
+                        onClick={() => {
+                          // Use React Router navigation to preserve cache
+                          navigate(`/react-query/${name}`);
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </>
+            )}
           </Grid>
         </Grid>
       </CardContent>

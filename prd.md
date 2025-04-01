@@ -19,7 +19,12 @@ The goal is to provide a clear, practical example for developers comparing these
 *   **Core UI Components (Shared):**
     *   `PokemonCard`: Displays basic info (name, image, type). Shows skeleton loading state. Links to detail page.
     *   `PokemonGrid`: Displays a grid of `PokemonCard` components for the first 151 Pokémon. Shows overall list loading/error state.
-    *   `PokemonDetail`: Displays more comprehensive details for a selected Pokémon (stats, abilities, etc.). Shows loading/error state.
+    *   `PokemonDetail`: Displays more comprehensive details for a selected Pokémon:
+        - Basic info (stats, abilities, etc.)
+        - Evolution chain using nested API calls (species -> evolution chain)
+        - Reuses `PokemonCard` components to display evolutions
+        - Demonstrates React Query's caching when navigating between related Pokémon
+        - Shows loading/error states for both main content and evolution chain
     *   `Layout`: Contains navigation (AppBar/Tabs) to switch between the three versions and renders the main content area.
     *   Loading/Error Components: Reusable MUI `Skeleton` components and simple error message displays/fallbacks.
 
@@ -31,6 +36,8 @@ The goal is to provide a clear, practical example for developers comparing these
         - Own instance of `QueryClientProvider`
         - Demonstrates efficient caching on navigation
         - Shows background refetching capabilities
+        - Shows dependent queries (Pokemon -> Species -> Evolution Chain)
+        - Demonstrates cache hits when navigating between related Pokémon
         - Cache invalidation button to demonstrate cache control
 
     *   **/rtk-query/**

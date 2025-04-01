@@ -77,3 +77,33 @@ export interface PokemonState {
     } & LoadingState;
   };
 }
+
+export interface PokemonSpecies {
+  id: number;
+  name: string;
+  evolution_chain: {
+    url: string;
+  };
+}
+
+export interface EvolutionChain {
+  id: number;
+  chain: {
+    species: {
+      name: string;
+      url: string;
+    };
+    evolves_to: {
+      species: {
+        name: string;
+        url: string;
+      };
+      evolves_to: {
+        species: {
+          name: string;
+          url: string;
+        };
+      }[];
+    }[];
+  };
+}

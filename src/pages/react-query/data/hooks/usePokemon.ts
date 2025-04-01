@@ -2,9 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getPokemonList,
   getPokemonDetails,
+  getPokemonSpecies,
+  getEvolutionChain,
   transformToCard,
   extractIdFromUrl,
 } from "../../../../services/pokeapi";
+import { EvolutionChain } from "../../../../types/pokemon";
 
 export function usePokemonList() {
   return useQuery({
@@ -36,4 +39,42 @@ export function usePokemonDetails(name: string) {
     },
     enabled: !!name, // Only run the query if we have a name
   });
+}
+
+export function usePokemonSpecies(name: string) {
+  return useQuery({
+    queryKey: ["pokemon", "species", name],
+    queryFn: () => getPokemonSpecies(name),
+    enabled: !!name,
+  });
+}
+
+export function useEvolutionChain(evolutionChainUrl: string | undefined) {
+  return useQuery({
+    queryKey: ["pokemon", "evolution", evolutionChainUrl],
+    queryFn: () => getEvolutionChain(evolutionChainUrl!),
+    enabled: !!evolutionChainUrl,
+  });
+}
+
+// Helper function to extract all evolution names from the chain
+export function extractEvolutionNames(
+  chain: EvolutionChain["chain"]
+): string[] {
+  const names: string[] = [chain.species.name];
+
+  chain.evolves_to.forEach(
+    (evolution: EvolutionChain["chain"]["evolves_to"][0]) => {
+      names.push(evolution.species.name);
+      evolution.evolves_to.forEach(
+        (
+          furtherEvolution: EvolutionChain["chain"]["evolves_to"][0]["evolves_to"][0]
+        ) => {
+          names.push(furtherEvolution.species.name);
+        }
+      );
+    }
+  );
+
+  return names;
 }

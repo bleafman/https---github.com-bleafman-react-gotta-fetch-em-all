@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material";
 import { PokemonListItem } from "../types/pokemon";
 import PokemonCard from "./PokemonCard";
-import { LoadingSkeleton } from "./LoadingSkeleton";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { useNavigate } from "react-router-dom";
 
@@ -24,20 +23,25 @@ export const PokemonGrid = ({
     return <ErrorDisplay error={error} />;
   }
 
-  if (isLoading) {
-    return <LoadingSkeleton count={12} />;
-  }
-
   return (
     <Grid container spacing={2}>
-      {pokemon.map((p) => (
-        <Grid key={p.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <PokemonCard
-            name={p.name}
-            onClick={() => navigate(`${basePath}/${p.name}`)}
-          />
-        </Grid>
-      ))}
+      {isLoading
+        ? Array.from({ length: 12 }).map((_, index) => (
+            <Grid
+              size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+              key={`skeleton-${index}`}
+            >
+              <PokemonCard name="" showLoadingState={true} isLoading={true} />
+            </Grid>
+          ))
+        : pokemon.map((p) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={p.id}>
+              <PokemonCard
+                name={p.name}
+                onClick={() => navigate(`${basePath}/${p.name}`)}
+              />
+            </Grid>
+          ))}
     </Grid>
   );
 };

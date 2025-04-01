@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Routes, Route } from "react-router-dom";
 import PokemonDetail from "./components/PokemonDetail";
 import PokemonList from "./components/PokemonList";
@@ -21,6 +22,7 @@ export default function ReactQueryPage() {
         <Route index element={<PokemonList />} />
         <Route path=":pokemonName" element={<PokemonDetail />} />
       </Routes>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
