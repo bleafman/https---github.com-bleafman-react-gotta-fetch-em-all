@@ -30,14 +30,18 @@ export function usePokemonList() {
   });
 }
 
-export function usePokemonDetails(name: string) {
+export function usePokemonDetails(
+  name: string,
+  options?: { enabled?: boolean }
+) {
   return useQuery({
     queryKey: ["pokemon", "details", name],
     queryFn: async () => {
       const details = await getPokemonDetails(name);
       return transformToCard(details);
     },
-    enabled: !!name, // Only run the query if we have a name
+    enabled: options?.enabled ?? !!name,
+    placeholderData: (prev) => prev,
   });
 }
 
@@ -46,6 +50,7 @@ export function usePokemonSpecies(name: string) {
     queryKey: ["pokemon", "species", name],
     queryFn: () => getPokemonSpecies(name),
     enabled: !!name,
+    placeholderData: (prev) => prev,
   });
 }
 
@@ -54,6 +59,7 @@ export function useEvolutionChain(evolutionChainUrl: string | undefined) {
     queryKey: ["pokemon", "evolution", evolutionChainUrl],
     queryFn: () => getEvolutionChain(evolutionChainUrl!),
     enabled: !!evolutionChainUrl,
+    placeholderData: (prev) => prev,
   });
 }
 

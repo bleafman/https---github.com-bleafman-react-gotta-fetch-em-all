@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import ReactQueryPage from "./pages/react-query/ReactQueryPage";
+import RTKQueryPage from "./pages/rtk-query/RTKQueryPage";
 
 // Placeholder pages - we'll implement these in their respective phases
-const RtkQueryPage = () => <div>RTK Query Implementation (Coming Soon)</div>;
 const ReduxPage = () => <div>Redux Implementation (Coming Soon)</div>;
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
           <Route path="react-query/*" element={<ReactQueryPage />} />
 
           {/* RTK Query Routes */}
-          <Route path="rtk-query/*" element={<RtkQueryPage />} />
+          <Route path="rtk-query/*" element={<RTKQueryPage />} />
 
           {/* Redux Routes */}
           <Route path="redux/*" element={<ReduxPage />} />

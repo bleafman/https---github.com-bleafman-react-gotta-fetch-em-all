@@ -10,16 +10,16 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {
-  usePokemonDetails,
-  usePokemonSpecies,
-  useEvolutionChain,
-  extractEvolutionNames,
-} from "../data/hooks/usePokemon";
+  useGetPokemonDetailsQuery,
+  useGetPokemonSpeciesQuery,
+  useGetEvolutionChainQuery,
+} from "../data/pokemonApi";
+import { extractEvolutionNames } from "../../../pages/react-query/data/hooks/usePokemon";
 import ErrorDisplay from "../../../components/ErrorDisplay";
-import PokemonCard from "../../../components/PokemonCard";
+import PokemonCard from "./PokemonCard";
 
 export default function PokemonDetail() {
-  console.log("[React Query] PokemonDetail rendering", new Date().getTime());
+  console.log("[RTK Query] PokemonDetail rendering", new Date().getTime());
   const { pokemonName } = useParams<{ pokemonName: string }>();
   const navigate = useNavigate();
 
@@ -28,17 +28,20 @@ export default function PokemonDetail() {
     isLoading,
     isError,
     error,
-  } = usePokemonDetails(pokemonName || "");
+  } = useGetPokemonDetailsQuery(pokemonName || "");
 
   // Fetch species data which contains evolution chain URL
-  const { data: species } = usePokemonSpecies(pokemonName || "");
+  const { data: species } = useGetPokemonSpeciesQuery(pokemonName || "");
 
   // Fetch evolution chain data
-  const { data: evolutionChain } = useEvolutionChain(
-    species?.evolution_chain.url
+  const { data: evolutionChain } = useGetEvolutionChainQuery(
+    species?.evolution_chain.url || "",
+    {
+      skip: !species?.evolution_chain.url,
+    }
   );
 
-  console.log("[React Query] Data state:", {
+  console.log("[RTK Query] Data state:", {
     pokemonName,
     hasData: !!pokemon,
     isLoading,
@@ -90,7 +93,7 @@ export default function PokemonDetail() {
   }
 
   if (isError) {
-    return <ErrorDisplay error={error} />;
+    return <ErrorDisplay error={error as Error} />;
   }
 
   if (!pokemon) {
@@ -160,8 +163,7 @@ export default function PokemonDetail() {
                       <PokemonCard
                         name={name}
                         onClick={() => {
-                          // Use React Router navigation to preserve cache
-                          navigate(`/react-query/${name}`);
+                          navigate(`/rtk-query/${name}`);
                         }}
                       />
                     </Grid>
